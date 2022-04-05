@@ -1,6 +1,9 @@
 # Authentification-_Web_s-curis-_-_St-ganographie
 
+### Avoir Openssl 
+* https://fedingo.com/how-to-install-openssl-in-ubuntu/
 
+### Pour le serveur web 
 * python3 -m pip install bottle
 
 ## Pour les requêtes web
