@@ -22,5 +22,3 @@
 * sudo apt install libzbar0 libzbar-dev
 * python3 -m pip install zbarlight
 
-### pour la doc 
-* python3 -m pip install sphinx
