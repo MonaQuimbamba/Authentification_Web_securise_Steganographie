@@ -1,11 +1,15 @@
 #!/usr/bin/python3
+import tools.graphiques as qr_code
 from bottle import route, run, template, request, response
+
+
 
 @route('/creation', method='POST')
 def création_attestation():
     contenu_identité = request.forms.get('identite')
     contenu_intitulé_certification = request.forms.get('intitule_certif')
     print('nom prénom :', contenu_identité, ' intitulé de la certification :',contenu_intitulé_certification)
+    qr_code.faire_qr_code()
     response.set_header('Content-type', 'text/plain')
     return "ok!"
 
