@@ -1,0 +1,6 @@
+#!/bin/bash -x
+
+# generer la bi-clé
+openssl ecparam -out ecc.ca.key.pem -name prime256v1 -genkey
+# Réalisez l’« auto-signature » du certificat de l’AC 
+openssl req -config <(printf "[req]\ndistinguished_name=dn\n[dn]\n[ext]\nbasicConstraints=CA:TRUE") -new -nodes -subj "/C=FR/L=Limoges/O=CRYPTIS/OU=SecuTIC/CN=ACSECUTIC" -x509 -extensions ext -sha256 -key ecc.ca.key.pem -text -out ecc.ca.cert.pem
