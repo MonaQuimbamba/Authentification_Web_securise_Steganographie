@@ -1,12 +1,11 @@
 #!/usr/bin/python3
 from PIL import Image
-
+import subprocess
 
 def vers_8bit(c):
     """Documentation for a function.
     More details.
     """
-
     chaine_binaire = bin(ord(c))[2:]
     return "0"*(8-len(chaine_binaire))+chaine_binaire
 
@@ -21,7 +20,6 @@ def modifier_pixel(pixel, bit):
 def recuperer_bit_pfaible(pixel):
     r_val = pixel[0]
     return bin(r_val)[-1]
-
 
 def cacher(image,message):
     dimX,dimY = image.size
@@ -56,30 +54,45 @@ def recuperer(image,taille):
 
 
 
-# Valeurs par defaut
-nom_defaut = "image_test.png"
-message_defaut = "Hello world"
-choix_defaut = 1
-# programme de demonstration
-saisie = input("Entrez l'operation 1) cacher 2) retrouver [%d]"%choix_defaut)
-choix = saisie or choix_defaut
+def faire_stegano(nom_fichier,bloc_info,file_timestamp):
+    cmd = subprocess.Popen("cat %s"%file_timestamp, shell=True,stdout=subprocess.PIPE)
+    (timestamp, ignorer) = cmd.communicate()
+    nom_fichier = nom_fichier
+    ## completer le bloc d'info pour arriver à 64 octs
+    if len(bloc_info) < 64:
+        octets_to_add=64 - len(bloc_info)
+        for i in range(octets_to_add):
+            bloc_info+=str(i)
 
-if choix == 1:
-    saisie = input("Entrez le nom du fichier [%s]"%nom_defaut)
-    nom_fichier = saisie or nom_defaut
-    saisie = input("Entrez le message [%s]"%message_defaut)
+    bloc_info=bloc_info[:64]
+    # add octet on bloc_info
+    saisie = bloc_info+str(timestamp)#input("Entrez le message [%s]"%message_defaut)
     message_a_traiter = saisie or message_defaut
     print ("Longueur message : ",len(message_a_traiter))
     mon_image = Image.open(nom_fichier)
     cacher(mon_image, message_a_traiter)
     mon_image.save("stegano_"+nom_fichier)
 
-else :
+def recuperer_info_stegano():
+    # Valeurs par defaut
+    nom_defaut = "image_test.png"
+    message_defaut = "Hello world"
+    choix_defaut = 1
+    # programme de demonstration
+    #saisie = input("Entrez l'operation 1) cacher 2) retrouver [%d]"%choix_defaut)
+    #choix = saisie or choix_defaut
 
-    saisie = input("Entrez le nom du fichier [%s]"%nom_defaut)
+    #if choix == 1:
+    saisie = "stegano_attestation.png"
     nom_fichier = saisie or nom_defaut
-    saisie = input("Entrez la taille du message ")
+    saisie = 64#input("Entrez la taille du message ") 13986
     message_a_traiter = int(saisie)
     mon_image = Image.open(nom_fichier)
     message_retrouve = recuperer(mon_image, message_a_traiter)
     print (message_retrouve)
+
+
+p1="attestation.png"
+p2="Claudio Antonio Certificat delivré par"
+p3="file.tsr"
+faire_stegano(p1,p2,p3)

@@ -1,0 +1,7 @@
+##!/bin/bash -x
+
+openssl ts -query -data attestation.png -no_nonce -sha512 -cert -out file.tsq
+
+curl -H "Content-Type: application/timestamp-query" --data-binary '@file.tsq' https://freetsa.org/tsr > file.tsr
+
+openssl ts -verify -in file.tsr -queryfile file.tsq -CAfile cacert.pem -untrusted tsa.crt
