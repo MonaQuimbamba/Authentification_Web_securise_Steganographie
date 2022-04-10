@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from PIL import Image
 import subprocess
+import sys,os
 
 def vers_8bit(c):
     """Documentation for a function.
@@ -66,33 +67,19 @@ def faire_stegano(nom_fichier,bloc_info,file_timestamp):
 
     bloc_info=bloc_info[:64]
     # add octet on bloc_info
-    saisie = bloc_info+str(timestamp)#input("Entrez le message [%s]"%message_defaut)
-    message_a_traiter = saisie or message_defaut
-    print ("Longueur message : ",len(message_a_traiter))
+    saisie = bloc_info+str(timestamp)
+    message_a_traiter = saisie
     mon_image = Image.open(nom_fichier)
     cacher(mon_image, message_a_traiter)
-    mon_image.save("stegano_"+nom_fichier)
+    mon_image.save("../resources/stegano_attestation.png")
 
-def recuperer_info_stegano():
-    # Valeurs par defaut
-    nom_defaut = "image_test.png"
-    message_defaut = "Hello world"
-    choix_defaut = 1
-    # programme de demonstration
-    #saisie = input("Entrez l'operation 1) cacher 2) retrouver [%d]"%choix_defaut)
-    #choix = saisie or choix_defaut
+    return len(message_a_traiter)
 
-    #if choix == 1:
-    saisie = "stegano_attestation.png"
-    nom_fichier = saisie or nom_defaut
-    saisie = 64#input("Entrez la taille du message ") 13986
+
+
+def recuperer_info_stegano(taille_timestamp,nom_fichier):
+    saisie = taille_timestamp
     message_a_traiter = int(saisie)
     mon_image = Image.open(nom_fichier)
     message_retrouve = recuperer(mon_image, message_a_traiter)
-    print (message_retrouve)
-
-
-p1="attestation.png"
-p2="Claudio Antonio Certificat delivré par"
-p3="file.tsr"
-faire_stegano(p1,p2,p3)
+    return message_retrouve

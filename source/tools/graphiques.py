@@ -2,12 +2,13 @@ import qrcode
 import zbarlight
 from PIL import Image
 import subprocess
+import steganographie as stegano
 
-def faire_qr_code(info):
+def faire_qr_code(info,taille_timestamp):
     """
        ....
     """
-    data = info
+    data = info+" "+str(taille_timestamp)
     nom_fichier = "../resources/qrcode.png"
     qr = qrcode.make(data)
     qr.save(nom_fichier, scale=2)
@@ -18,7 +19,7 @@ def merge_qrcode_wit_img():
     cmd = subprocess.Popen("mogrify -resize 150x150 ../resources/qrcode.png", shell=True,stdout=subprocess.PIPE)
     (resultat, ignorer) = cmd.communicate()
 
-    cmd = subprocess.Popen("composite -geometry +1450+1000 ../resources/qrcode.png ../resources/combinaison.png ../resources/attestation.png", shell=True,stdout=subprocess.PIPE)
+    cmd = subprocess.Popen("composite -geometry +1450+1000 ../resources/qrcode.png ../resources/stegano_attestation.png ../resources/attestation.png", shell=True,stdout=subprocess.PIPE)
     (resultat, ignorer) = cmd.communicate()
 
 def add_strings_to_img(texte_ligne):
@@ -44,17 +45,34 @@ def get_info_from_qrcode():
     """
     ....
     """
-    image = Image.open("../qrcode.png")
+    image = Image.open("../resources/qrcode.png")
     data = zbarlight.scan_codes(['qrcode'], image)
-    print(data)
+    return data
 
 def attestatio_graphique():
     """
     """
     signature_info="signed"
-    faire_qr_code(signature_info)
-    texte_ligne='Certificat délivré | à | Nom Prénom'
-    add_strings_to_img(texte_ligne)
+    nom_fichier_img="../resources/combinaison.png"
+    file_timestamp="../freeTSA/file.tsr"
+    bloc_info='Certificat délivré | à | Nom Prénom'
+    add_strings_to_img(bloc_info)
+    taille_timestamp = stegano.faire_stegano(nom_fichier_img,bloc_info,file_timestamp)
+    faire_qr_code(signature_info,taille_timestamp)
+
     merge_qrcode_wit_img()
 
-#attestatio_graphique()
+def verifier_stegano():
+    nom_fichier = "../resources/attestation.png"
+    taille_timestamp =str(get_info_from_qrcode()[0])
+    taille_timestamp=int(taille_timestamp.split(" ")[1].replace("'",""))
+    info_get_from_stegano= stegano.recuperer_info_stegano(taille_timestamp,nom_fichier)
+    return info_get_from_stegano
+
+def traiter_info_pour_verifier():
+    """
+    """
+    info_to_verifie=verifier_stegano()
+    print(info_to_verifie)
+
+traiter_info_pour_verifier()
