@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 source/*.pem
 
+=======
+>>>>>>> c4df2e8b49edbcc2d9bc1854fc4e40222c73ea72
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
