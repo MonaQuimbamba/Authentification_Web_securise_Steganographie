@@ -2,6 +2,7 @@
 from PIL import Image
 import subprocess
 import sys,os
+import binascii
 
 def vers_8bit(c):
     """Documentation for a function.
@@ -54,16 +55,12 @@ def recuperer(image,taille):
     return message
 
 def faire_stegano(nom_fichier,bloc_info,file_timestamp,hash_timestamp):
-    #cmd = subprocess.Popen("cat %s"%file_timestamp, shell=True,stdout=subprocess.PIPE)
-    #(timestamp, ignorer) = cmd.communicate()
-    f = open(file_timestamp, "rb")
-    timestamp =f.read()
+    with open(file_timestamp, "rb") as f:
+        timestamp =binascii.b2a_base64(f.read())
     f.close()
-    f = open(hash_timestamp, "rb")
-    hashtimestamp =f.read()
+    with open(hash_timestamp, "rb") as f:
+        hashtimestamp =binascii.b2a_base64(f.read())
     f.close()
-    #cmd = subprocess.Popen("cat %s"%hash_timestamp, shell=True,stdout=subprocess.PIPE)
-    #(hashtimestamp, ignorer) = cmd.communicate()
     nom_fichier = nom_fichier
     ## completer le bloc d'info pour arriver à 64 octs
     if len(bloc_info) < 64:

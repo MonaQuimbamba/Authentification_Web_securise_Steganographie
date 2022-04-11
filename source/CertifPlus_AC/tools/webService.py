@@ -19,6 +19,8 @@ def création_attestation():
 def vérification_attestation():
     contenu_image = request.files.get('image')
     contenu_image.save('../tmp/attestation_hba_verifier.png',overwrite=True)
+    tools.traiter_info_pour_verifier()
+    tools.clean_cache()
     response.set_header('Content-type', 'text/plain')
     return "ok!"
 

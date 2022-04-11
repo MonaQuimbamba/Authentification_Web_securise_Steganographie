@@ -4,6 +4,7 @@ from PIL import Image
 import subprocess
 import steganographie as stegano
 import os
+import binascii
 
 def faire_qr_code(info,taille_timestamp):
     """
@@ -67,8 +68,8 @@ def attestation_graphique(bloc_info_from):
 def verifier_stegano():
     nom_fichier = "../tmp/attestation_hba_verifier.png"
     get_qrcode_from_img(nom_fichier)
-    taille_timestamp =str(get_info_from_qrcode()[0])
-    taille_timestamp=int(taille_timestamp.split(" ")[1].replace("'",""))
+    tmp_var =get_info_from_qrcode()[0].decode().split(" ")
+    taille_timestamp=int(tmp_var[1])
     info_get_from_stegano= stegano.recuperer_info_stegano(taille_timestamp,nom_fichier)
     return info_get_from_stegano
 
@@ -77,11 +78,15 @@ def traiter_info_pour_verifier():
     """
     info_to_verifie=verifier_stegano()
     bloc_info =info_to_verifie[:64]
-    #print(bloc_info)
-    faire_file("../tmp/file.tsr",info_to_verifie[64:].split("**")[0].encode())
-    faire_file("../tmp/file.tsq",info_to_verifie[64:].split("**")[1].encode())
+    tsq_contenu=info_to_verifie.split("**")[1]
+    tsq_contenu=tsq_contenu[1:]
+    tsq_contenu= binascii.a2b_base64(tsq_contenu)
+    tsr_contenu =info_to_verifie.split("**")[0][65:]
+    tsr_text=binascii.a2b_base64(tsr_contenu)
+    faire_file("../tmp/file.tsr",tsr_text)
+    faire_file("../tmp/file.tsq",tsq_contenu)
     verifier_timestamp()
-    #print(info_to_verifie[64:].split("**")[1])
+
 
 def demande_timestamp():
     os.system("openssl ts -query -data ../tmp/combinaison.png -no_nonce -sha512 -cert -out ../tmp/file.tsq")
@@ -98,13 +103,9 @@ def faire_file(fileName,contenu):
     f.write(contenu)
     f.close()
 
-def test():
-    f = open("../../file.tsq", "rb")
-    contenu =f.read()
-    f = open("../../t.tsq", "wb")
-    f.write(contenu)
-    f.close()
 def clean_cache():
     os.system(" rm -r ../tmp/*")
 
-traiter_info_pour_verifier()
+
+#traiter_info_pour_verifier()
+#attestation_graphique("salut cava mon pote ")
