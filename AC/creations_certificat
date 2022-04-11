@@ -20,3 +20,13 @@ openssl dgst -sha256 -sign  ac_private_key.pem  bloc_Info.txt > bloc_Info_sign.s
 
 #Convertion ASCII
 openssl base64  -in bloc_Info_sign.sig -out bloc_Info_sign_ascii.sig
+
+#Creation du tsq(TimeStampRequest) avec openssl timestamp: requête à envoyer sur le site https://freetsa.org/tsr
+openssl ts -query -data bloc_Info.txt -no_nonce -sha512 -cert -out bloc_Info.tsq
+#Curl pour la demande du timestamp sur le site https://freetsa.org/tsr
+curl -H "Content-Type: application/timestamp-query" --data-binary '@bloc_Info.tsq' https://freetsa.org/tsr > bloc_Info.tsr 
+
+
+
+#Verification
+openssl ts -verify -in bloc_Info.tsr -queryfile bloc_Info.tsq -CAfile cacert.pem -untrusted tsa.crt

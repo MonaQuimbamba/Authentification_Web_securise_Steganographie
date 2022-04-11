@@ -6,8 +6,12 @@ def création_attestation():
     contenu_intitulé_certification = request.forms.get('intitule_certif')
     contenu_intitulé_certification = request.forms.get('intitule_certif')
     print('nom prénom :', contenu_identité, ' intitulé de la certification :',contenu_intitulé_certification)
+    make()
     response.set_header('Content-type', 'text/plain')
     return "ok!"
+
+def make():
+    print("coucou ")
 @route('/verification', method='POST')
 def vérification_attestation():
     contenu_image = request.files.get('image')
