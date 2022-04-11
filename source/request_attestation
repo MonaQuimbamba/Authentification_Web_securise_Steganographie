@@ -1,0 +1,7 @@
+#!/bin/bash -x
+
+curl -X POST -d 'identite=toto' -d 'intitule_certif=SecuTIC' http://localhost:8080/creation
+
+curl -v -o mon_image.png http://localhost:8080/fond
+
+curl -v -F image=@mon_image.png http://localhost:8080/verification

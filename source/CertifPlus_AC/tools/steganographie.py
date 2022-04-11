@@ -53,11 +53,17 @@ def recuperer(image,taille):
         message += chr(int(rep_binaire, 2))
     return message
 
-
-
-def faire_stegano(nom_fichier,bloc_info,file_timestamp):
-    cmd = subprocess.Popen("cat %s"%file_timestamp, shell=True,stdout=subprocess.PIPE)
-    (timestamp, ignorer) = cmd.communicate()
+def faire_stegano(nom_fichier,bloc_info,file_timestamp,hash_timestamp):
+    #cmd = subprocess.Popen("cat %s"%file_timestamp, shell=True,stdout=subprocess.PIPE)
+    #(timestamp, ignorer) = cmd.communicate()
+    f = open(file_timestamp, "rb")
+    timestamp =f.read()
+    f.close()
+    f = open(hash_timestamp, "rb")
+    hashtimestamp =f.read()
+    f.close()
+    #cmd = subprocess.Popen("cat %s"%hash_timestamp, shell=True,stdout=subprocess.PIPE)
+    #(hashtimestamp, ignorer) = cmd.communicate()
     nom_fichier = nom_fichier
     ## completer le bloc d'info pour arriver à 64 octs
     if len(bloc_info) < 64:
@@ -67,15 +73,12 @@ def faire_stegano(nom_fichier,bloc_info,file_timestamp):
 
     bloc_info=bloc_info[:64]
     # add octet on bloc_info
-    saisie = bloc_info+str(timestamp)
-    message_a_traiter = saisie
+    message_a_traiter = bloc_info+str(timestamp)+"**"+str(hashtimestamp)
     mon_image = Image.open(nom_fichier)
     cacher(mon_image, message_a_traiter)
-    mon_image.save("../resources/stegano_attestation.png")
+    mon_image.save("../tmp/stegano_attestation.png")
 
     return len(message_a_traiter)
-
-
 
 def recuperer_info_stegano(taille_timestamp,nom_fichier):
     saisie = taille_timestamp
