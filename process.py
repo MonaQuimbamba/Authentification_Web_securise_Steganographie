@@ -23,7 +23,7 @@ def creation_attestation():
     f.write("Intitulé du certificat :")
     f.write(inti_certi)
     #Signature
-    commande1 = subprocess.Popen(f"openssl dgst -sha256 -sign  ac_private_key.pem  {bloc_Info} > bloc_Info_sign.sig " , shell=True,stdout=subprocess.PIPE)
+    commande1 = subprocess.Popen(f"openssl dgst -sha256 -sign  certifPlus_priv.key.pem   {bloc_Info} > bloc_Info_sign.sig " , shell=True,stdout=subprocess.PIPE)
     (resultat1, ignorer1) = commande1.communicate()
     #conversion ascii
     commande2 = subprocess.Popen(f" openssl base64  -in bloc_Info_sign.sig -out bloc_Info_sign_ascii.sig" , shell=True,stdout=subprocess.PIPE)
