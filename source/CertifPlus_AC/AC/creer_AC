@@ -4,7 +4,9 @@
 ## mot de passe 'toto' pour la clé privé
 # generer la biclé  de l'AC
 openssl ecparam -genkey -name prime256v1 | openssl ec -aes256 -out private_key.pem -passin pass:toto
-﻿openssl ec -in private_key.pem -pubout -out public_key.pem
+
+
+openssl ec -in private_key.pem -pubout -out public_key.pem
 ############################################################################
 
 # faire le certificat racine
