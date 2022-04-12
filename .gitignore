@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 source/*.pem
 source/CertiPlus_AC/AC/*.pem
 source/CertiPlus_AC/AC/*.srl
@@ -11,8 +11,6 @@ source/CertiPlus_AC/AC/private_key.pem
 source/CertiPlus_AC/AC/public_key.pem
 source/freeTSA/*.pem
 
-=======
->>>>>>> c4df2e8b49edbcc2d9bc1854fc4e40222c73ea72
 
 
 source/*.pem
