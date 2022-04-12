@@ -73,7 +73,7 @@ def faire_stegano(nom_fichier,bloc_info,file_timestamp,hash_timestamp):
     message_a_traiter = bloc_info+str(timestamp)+"**"+str(hashtimestamp)
     mon_image = Image.open(nom_fichier)
     cacher(mon_image, message_a_traiter)
-    mon_image.save("../tmp/stegano_attestation.png")
+    mon_image.save("../etc/tmp/stegano_attestation.png")
 
     return len(message_a_traiter)
 

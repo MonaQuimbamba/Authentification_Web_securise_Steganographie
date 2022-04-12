@@ -18,18 +18,22 @@ def création_attestation():
 @route('/verification', method='POST')
 def vérification_attestation():
     contenu_image = request.files.get('image')
-    contenu_image.save('../tmp/attestation_hba_verifier.png',overwrite=True)
-    tools.traiter_info_pour_verifier()
-    tools.clean_cache()
-    response.set_header('Content-type', 'text/plain')
-    return "ok!"
+    contenu_image.save('../etc/tmp/attestation_hba_verifier.png',overwrite=True)
+    if tools.verifier_attestation():
+        tools.clean_cache()
+        response.set_header('Content-type', 'text/plain')
+        return "ok!"
+    else:
+        tools.clean_cache()
+        response.set_header('Content-type', 'text/plain')
+        return "failled!"
 
 
 
 @route('/fond')
 def récupérer_fond():
     response.set_header('Content-type', 'image/png')
-    descripteur_fichier = open('../tmp/attestation.png','rb')
+    descripteur_fichier = open('../etc/tmp/attestation.png','rb')
     contenu_fichier = descripteur_fichier.read()
     descripteur_fichier.close()
     tools.clean_cache()

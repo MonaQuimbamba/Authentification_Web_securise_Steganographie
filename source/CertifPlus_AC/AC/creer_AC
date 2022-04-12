@@ -3,7 +3,9 @@
 
 ## mot de passe 'toto' pour la clé privé
 # generer la biclé  de l'AC
+# cle privée
 openssl ecparam -genkey -name prime256v1 | openssl ec -aes256 -out private_key.pem -passin pass:toto
+# cle public
 ﻿openssl ec -in private_key.pem -pubout -out public_key.pem
 ############################################################################
 
@@ -17,6 +19,6 @@ openssl req -config <(printf "[req]\ndistinguished_name=dn\n[dn]\n[ext]\nbasicCo
 openssl x509 -req -days 3650 -CA ca.root.cert.pem -CAkey private_key.pem -CAcreateserial -extfile <(printf "basicConstraints=critical,CA:FALSE") -in ecc.csr.pem -text -out ecc.serveur.pem
 ############################################################################################
 # signer avec la clé privée
-#﻿openssl dgst -sign priv_key_alice.pem -keyform PEM -sha256 -out signature.sign -binary filename.txt
+#﻿openssl dgst -sign private_key.pem -keyform PEM -sha256 -out signature.sign -binary filename.txt
 # verifier avec la clé pub
-#openssl dgst -verify pub_key_alice.pem -keyform PEM -sha256 -signature signature.sign -binary filename.txt
+#openssl dgst -verify public_key.pem -keyform PEM -sha256 -signature signature.sign -binary filename.txt
