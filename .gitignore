@@ -1,29 +1,9 @@
 
 source/*.pem
-source/CertiPlus_AC/AC/*.pem
-source/CertiPlus_AC/AC/*.srl
-
-source/CertiPlus_AC/AC/ca.root.cert.pem
-source/CertiPlus_AC/AC/ca.root.cert.srl
-source/CertiPlus_AC/AC/ecc.csr.pem
-source/CertiPlus_AC/AC/ecc.serveur.pem
-source/CertiPlus_AC/AC/private_key.pem
-source/CertiPlus_AC/AC/public_key.pem
-source/freeTSA/*.pem
+source/CertifPlus_AC/AC/*.pem
+source/CertifPlus_AC/AC/*.srl
 
 
-
-source/*.pem
-source/CertiPlus_AC/AC/*.pem
-source/CertiPlus_AC/AC/*.srl
-
-source/CertiPlus_AC/AC/ca.root.cert.pem
-source/CertiPlus_AC/AC/ca.root.cert.srl
-source/CertiPlus_AC/AC/ecc.csr.pem
-source/CertiPlus_AC/AC/ecc.serveur.pem
-source/CertiPlus_AC/AC/private_key.pem
-source/CertiPlus_AC/AC/public_key.pem
-source/freeTSA/*.pem
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
