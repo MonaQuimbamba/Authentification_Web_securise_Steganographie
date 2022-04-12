@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 source/*.pem
-source/CertiPlus_AC/*.pem
+source/CertiPlus_AC/AC/*.pem
+source/CertiPlus_AC/AC/*.srl
 source/freeTSA/*.pem
 
 =======
