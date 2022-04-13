@@ -52,7 +52,7 @@ def get_info_from_qrcode():
     data = zbarlight.scan_codes(['qrcode'], image)
     return data
 
-def attestation_graphique(bloc_info_from):
+def faire_attestation(bloc_info_from):
     """
     """
     signature_info=signer(bloc_info_from)
@@ -80,22 +80,32 @@ def verifier_attestation():
     info_to_verifie=verifier_stegano()
     bloc_info =info_to_verifie[:64]
     tsq_contenu=info_to_verifie.split("**")[1]
+    print(tsq_contenu)
     tsq_contenu=tsq_contenu[1:]
-    tsq_contenu= binascii.a2b_base64(tsq_contenu)
-    tsr_contenu =info_to_verifie.split("**")[0][65:]
-    tsr_text=binascii.a2b_base64(tsr_contenu)
-    faire_file("../etc/tmp/file.tsr",tsr_text)
-    faire_file("../etc/tmp/file.tsq",tsq_contenu)
-    return verifier_timestamp()==True and verify_signature()==True
-
-
-def demande_timestamp():
-    os.system("openssl ts -query -data ../etc/tmp/combinaison.png -no_nonce -sha512 -cert -out ../etc/tmp/file.tsq")
-    os.system('curl -H "Content-Type: application/timestamp-query" --data-binary "@../etc/tmp/file.tsq" https://freetsa.org/tsr > ../etc/tmp/file.tsr')
-
+    tsq_contenu=tsq_contenu.replace("'","")
+    tsq_contenu=tsq_contenu[:-2]
+    os.system("echo -n %s > ../etc/tmp/file.tsq"%tsq_contenu)
+    #faire_file("../etc/tmp/file.tsq",tsq_contenu)
+    # openssl base64 -a -d -in bloc.sign -out bloc.bit
+    # openssl base64  -in %s -out ../etc/tmp/timestamp
+    os.system("sudo openssl base64 -a -d -in  ../etc/tmp/file.tsq -out  ../etc/tmp/file_f.tsq")
+    #cmd = subprocess.Popen("openssl base64 -a -d -in  ../etc/tmp/file.tsq -out  ../etc/tmp/file_f.tsq", shell=True,stdout=subprocess.PIPE)
+    #(hashtimestamp, ignorer) = cmd.communicate()
+    #print(tsq_contenu)
+    #tsq_contenu= binascii.a2b_base64(tsq_contenu)
+    #print(tsq_contenu)
+    #tsr_contenu =info_to_verifie.split("**")[0][65:]
+    #faire_file("../etc/tmp/file.tsr",tsr_contenu)
+    #os.system("openssl base64 -a -d -in ../etc/tmp/file.tsr -out ../etc/tmp/file.tsr")
+    #openssl base64 -a -d -in bloc.sign -out bloc.bit
+    #tsr_text=binascii.a2b_base64(tsr_contenu)
+    #faire_file("../etc/tmp/file.tsr",tsr_text)
+    #faire_file("../etc/tmp/file.tsq",tsq_contenu)
+    #print(verifier_timestamp())
+    #return verifier_timestamp()==True and verify_signature()==True
 
 def verifier_timestamp():
-    cmd = subprocess.Popen("openssl ts -verify -in ../etc/tmp/file.tsr -queryfile ../etc/tmp/file.tsq -CAfile ../freeTSA/cacert.pem -untrusted ../freeTSA/tsa.crt ", shell=True,stdout=subprocess.PIPE)
+    cmd = subprocess.Popen("openssl ts -verify -in ../etc/tmp/file.tsr -queryfile ../etc/tmp/file_f.tsq -CAfile ../freeTSA/cacert.pem -untrusted ../freeTSA/tsa.crt ", shell=True,stdout=subprocess.PIPE)
     (resultat, ignorer) = cmd.communicate()
     if len(resultat.decode().split(" "))==2:
         if resultat.decode().split(" ")[1].rstrip()=="OK":
@@ -104,8 +114,12 @@ def verifier_timestamp():
         return False
 
 
+def demande_timestamp():
+    os.system("openssl ts -query -data ../etc/tmp/combinaison.png -no_nonce -sha512 -cert -out ../etc/tmp/file.tsq")
+    os.system('curl -H "Content-Type: application/timestamp-query" --data-binary "@../etc/tmp/file.tsq" https://freetsa.org/tsr > ../etc/tmp/file.tsr')
+
 def faire_file(fileName,contenu):
-    f = open(fileName, "wb")
+    f = open(fileName, "w")
     f.write(contenu)
     f.close()
 
@@ -123,14 +137,16 @@ def signer(bloc_info_from):
     (resultat, ignorer) = cmd.communicate()
     return binascii.b2a_base64(resultat)
 
-
-
 def verify_signature():
     signature = get_info_from_qrcode()
+    # openssl base64 -a -d -in bloc.sign -out bloc.bit
+    # openssl base64  -in bloc_Info_sign.sig -out bloc_Info_sign_ascii.sig
     signature=str(signature[0]).split(" ")[0]
-    signature=signature[3:]
-    signature=binascii.a2b_base64(signature)
-    f_name="../etc/tmp/sig.signature"
+    #signature=signature.replace("\\n","")
+    print(signature)
+    #signature=binascii.a2b_base64(signature.encode())
+
+    """f_name="../etc/tmp/sig.signature"
     faire_file(f_name,signature)
     for f in os.listdir("../etc/signature"):
         f="../etc/signature/"+f
@@ -139,4 +155,9 @@ def verify_signature():
         if resultat.decode().split(" ")[0]=="Verified" and resultat.decode().split(" ")[1].rstrip()=="OK":
             #print(resultat.decode().split(" ")[1].rstrip())
             return True
-    return False
+    return False"""
+
+#verify_signature()
+
+verifier_attestation()
+#faire_attestation("salut")

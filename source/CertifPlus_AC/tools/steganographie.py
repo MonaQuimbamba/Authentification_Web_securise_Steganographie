@@ -55,12 +55,20 @@ def recuperer(image,taille):
     return message
 
 def faire_stegano(nom_fichier,bloc_info,file_timestamp,hash_timestamp):
-    with open(file_timestamp, "rb") as f:
+    """with open(file_timestamp, "rb") as f:
         timestamp =binascii.b2a_base64(f.read())
     f.close()
     with open(hash_timestamp, "rb") as f:
         hashtimestamp =binascii.b2a_base64(f.read())
-    f.close()
+    f.close()"""
+    cmd = subprocess.Popen("openssl base64  -in %s -out ../etc/tmp/timestamp | cat ../etc/tmp/timestamp "%file_timestamp, shell=True,stdout=subprocess.PIPE)
+    (timestamp, ignorer) = cmd.communicate()
+    timestamp=timestamp.decode()
+    #print(timestamp)
+    cmd = subprocess.Popen("openssl base64  -in %s -out ../etc/tmp/hashtimestamp | cat ../etc/tmp/hashtimestamp "%hash_timestamp, shell=True,stdout=subprocess.PIPE)
+    (hashtimestamp, ignorer) = cmd.communicate()
+    hashtimestamp=hashtimestamp.decode()
+    #print(hashtimestamp)
     nom_fichier = nom_fichier
     ## completer le bloc d'info pour arriver à 64 octs
     if len(bloc_info) < 64:
