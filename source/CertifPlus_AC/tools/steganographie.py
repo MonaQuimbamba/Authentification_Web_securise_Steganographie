@@ -55,20 +55,21 @@ def recuperer(image,taille):
     return message
 
 def faire_stegano(nom_fichier,bloc_info,file_timestamp,hash_timestamp):
-    """with open(file_timestamp, "rb") as f:
+    """cmd = subprocess.Popen("openssl base64  -in %s -out ../Dossier/tmp/timestamp | cat ../Dossier/tmp/timestamp "%file_timestamp, shell=True,stdout=subprocess.PIPE)
+    (timestamp, ignorer) = cmd.communicate()
+    timestamp=timestamp.decode()
+    print(timestamp," ici == ")
+    cmd = subprocess.Popen("openssl base64  -in %s -out ../Dossier/tmp/hashtimestamp | cat ../Dossier/tmp/hashtimestamp "%hash_timestamp, shell=True,stdout=subprocess.PIPE)
+    (hashtimestamp, ignorer) = cmd.communicate()
+    hashtimestamp=hashtimestamp.decode()
+    print(hashtimestamp," icii == ")"""
+    with open(file_timestamp, "rb") as f:
         timestamp =binascii.b2a_base64(f.read())
     f.close()
     with open(hash_timestamp, "rb") as f:
         hashtimestamp =binascii.b2a_base64(f.read())
-    f.close()"""
-    cmd = subprocess.Popen("openssl base64  -in %s -out ../etc/tmp/timestamp | cat ../etc/tmp/timestamp "%file_timestamp, shell=True,stdout=subprocess.PIPE)
-    (timestamp, ignorer) = cmd.communicate()
-    timestamp=timestamp.decode()
-    #print(timestamp)
-    cmd = subprocess.Popen("openssl base64  -in %s -out ../etc/tmp/hashtimestamp | cat ../etc/tmp/hashtimestamp "%hash_timestamp, shell=True,stdout=subprocess.PIPE)
-    (hashtimestamp, ignorer) = cmd.communicate()
-    hashtimestamp=hashtimestamp.decode()
-    #print(hashtimestamp)
+    f.close()
+    
     nom_fichier = nom_fichier
     ## completer le bloc d'info pour arriver à 64 octs
     if len(bloc_info) < 64:
@@ -81,7 +82,7 @@ def faire_stegano(nom_fichier,bloc_info,file_timestamp,hash_timestamp):
     message_a_traiter = bloc_info+str(timestamp)+"**"+str(hashtimestamp)
     mon_image = Image.open(nom_fichier)
     cacher(mon_image, message_a_traiter)
-    mon_image.save("../etc/tmp/stegano_attestation.png")
+    mon_image.save("../Dossier/tmp/stegano_attestation.png")
 
     return len(message_a_traiter)
 

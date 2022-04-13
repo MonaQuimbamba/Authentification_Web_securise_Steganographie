@@ -5,3 +5,13 @@ curl -X POST -d 'identite=toto' -d 'intitule_certif=SecuTIC' http://localhost:80
 curl -v -o mon_image.png http://localhost:8080/fond
 
 curl -v -F image=@mon_image.png http://localhost:8080/verification
+
+
+socat openssl-listen:9000,fork,cert=bundle_serveur.pem,cafile=ca.root.cert.pem,verify=0 tcp:127.0.0.1:8080
+
+
+curl -v -X POST -d 'identite=toto' -d 'intitule_certif=SecuTIC' --cacert ca.root.cert.pem https://localhost:9000/certificat
+
+curl -v -o mon_image.png  --cacert ca.root.cert.pem https://localhost:9000/fond
+
+curl -v -F image=@mon_image.png   --cacert ca.root.cert.pem https://localhost:9000/verification
