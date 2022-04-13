@@ -5,7 +5,7 @@ openssl ecparam -out ac_private_key.pem -name prime256v1 -genkey
 #AC
 openssl req -config <(printf "[req]\ndistinguished_name=dn\n[dn]\n[ext]\nbasicConstraints=CA:TRUE") -new -nodes -subj "/C=FR/L=Limoges/O=CRYPTIS/OU=CertifPlus/CN=AC_CertifPlus" -x509 -extensions ext -sha256 -key ac_private_key.pem -text -out ac.cert.pem
 
-#clé serveur
+#clé privée de la société
 openssl ecparam -out certifPlus_priv.key.pem -name prime256v1 -genkey
 
 #creation de la demande de signature
@@ -27,6 +27,17 @@ openssl ts -query -data bloc_Info.txt -no_nonce -sha512 -cert -out bloc_Info.tsq
 curl -H "Content-Type: application/timestamp-query" --data-binary '@bloc_Info.tsq' https://freetsa.org/tsr > bloc_Info.tsr 
 
 
+###Partie vérification########
 
-#Verification
+
+#Verification timestamp
 openssl ts -verify -in bloc_Info.tsr -queryfile bloc_Info.tsq -CAfile cacert.pem -untrusted tsa.crt
+
+
+#décodage ascii vers bit
+openssl base64 -a -d -in bloc_Info_sign_ascii.sig -out bloc.bit 
+
+#vérifier si le fichier de signature initial qui est en bit est le même que celui générer du base64(la conversion base64 vers bit)
+openssl dgst -verify  certifPlus_pub.key.pem -keyform PEM  -sha256 -signature  bloc_Info_sign.sig  -binary bloc.bit
+
+ 
