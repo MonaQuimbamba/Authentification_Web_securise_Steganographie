@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ $# -eq 1 ]
+then
+  curl -v -o $1  --cacert ca.root.cert.pem https://localhost:9000/fond
+else
+  echo " Usage <nom_image.png>"
+fi

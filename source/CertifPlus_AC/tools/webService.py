@@ -10,7 +10,7 @@ def création_attestation():
     contenu_intitulé_certification = request.forms.get('intitule_certif')
     #print('nom prénom :', contenu_identité, ' intitulé de la certification :',contenu_intitulé_certification)
     tools.faire_attestation(contenu_identité+"|"+contenu_intitulé_certification)
-    print(" Votre attestation est prête vous pouves la récuperer ")
+    print(" Votre attestation est prête vous pouvez la récupérer ")
     response.set_header('Content-type', 'text/plain')
     return "ok!"
 
