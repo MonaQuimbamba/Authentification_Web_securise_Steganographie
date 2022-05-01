@@ -1,0 +1,32 @@
+#!/bin/bash -x
+
+# création de l'AC
+openssl ecparam  -name prime256v1 -genkey | openssl ec -aes256 -out c_p_ac.pem -passin pass:toto
+# faire le certificat racine
+openssl req -config root-ca.cnf -x509 -sha256 -key c_p_ac.pem -text -out ca.root.cert.pem
+## mot de passe 'toto' pour la clé privé
+# cle privée pour la signature
+openssl ecparam -genkey -name prime256v1 -out cle_privee_certifplus_signature.pem 
+
+
+# cle public pour la signature
+openssl ec -in cle_privee_certifplus_signature.pem -pubout -out cle_pub_certifplus_signature.pem
+
+## faire le certificat de l'association Certifplus
+# certificate pour la signature
+openssl req -config <(printf "[req]\ndistinguished_name=dn\n[dn]\n[ext]\nbasicConstraints=CA:FALSE") -new -subj "/C=FR/L=Limoges/O=CRYPTIS/OU=SecuTIC/CN=signature" -reqexts ext -sha256 -key cle_privee_certifplus_signature.pem  -text -out ecc.csr.pem
+# signer le certificat par l'ac
+openssl x509 -req -days 3650 -CA ca.root.cert.pem -CAkey c_p_ac.pem -CAcreateserial -extfile <(printf "basicConstraints=critical,CA:FALSE") -in ecc.csr.pem -text -out certificat_signature.pem
+############################################################################################
+
+# generer biclé pour le crtificat du serveur frontal
+openssl ecparam -out cle_prive_serveur_frontal.pem -name prime256v1 -genkey
+
+
+## faire le certificat de l'association Certifplus
+# certificate pour le serveur frontal
+openssl req -config <(printf "[req]\ndistinguished_name=dn\n[dn]\n[ext]\nbasicConstraints=CA:FALSE") -new -subj "/C=FR/L=Limoges/O=CRYPTIS/OU=SecuTIC/CN=localhost" -reqexts ext -sha256 -key cle_prive_serveur_frontal.pem  -text -out ecc.serveur.frontal.csr.pem
+# signer le certificat par l'ac
+openssl x509 -req -days 3650 -CA ca.root.cert.pem -CAkey c_p_ac.pem -CAcreateserial -extfile <(printf "basicConstraints=critical,CA:FALSE") -in ecc.serveur.frontal.csr.pem -text -out certificat_serveur_frontal.pem
+############################################################################################
+cat cle_prive_serveur_frontal.pem certificat_serveur_frontal.pem > bundle_serveur.pem

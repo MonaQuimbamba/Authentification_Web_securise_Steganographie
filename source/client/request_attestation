@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ $# -eq 3 ]
+then
+  var=$1" "$2
+  curl -v -X POST -d identite="${var}" -d intitule_certif="${3}" --cacert ca.root.cert.pem https://localhost:9000/creation
+else
+  echo " Usage <nom> <prenom> <intitulé de certification> "
+fi
