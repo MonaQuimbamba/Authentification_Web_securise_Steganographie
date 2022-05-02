@@ -5,8 +5,7 @@ import sys,os
 import binascii
 
 def vers_8bit(c):
-    """Documentation for a function.
-    More details.
+    """
     """
     chaine_binaire = bin(ord(c))[2:]
     return "0"*(8-len(chaine_binaire))+chaine_binaire
@@ -54,23 +53,12 @@ def recuperer(image,taille):
         message += chr(int(rep_binaire, 2))
     return message
 
-def faire_stegano(nom_fichier,bloc_info,file_timestamp,hash_timestamp):
-    """cmd = subprocess.Popen("openssl base64  -in %s -out ../Dossier/tmp/timestamp | cat ../Dossier/tmp/timestamp "%file_timestamp, shell=True,stdout=subprocess.PIPE)
-    (timestamp, ignorer) = cmd.communicate()
-    timestamp=timestamp.decode()
-    print(timestamp," ici == ")
-    cmd = subprocess.Popen("openssl base64  -in %s -out ../Dossier/tmp/hashtimestamp | cat ../Dossier/tmp/hashtimestamp "%hash_timestamp, shell=True,stdout=subprocess.PIPE)
-    (hashtimestamp, ignorer) = cmd.communicate()
-    hashtimestamp=hashtimestamp.decode()
-    print(hashtimestamp," icii == ")"""
+def faire_stegano(nom_fichier,bloc_info,file_timestamp):
     with open(file_timestamp, "rb") as f:
         timestamp =binascii.b2a_base64(f.read())
     f.close()
-    with open(hash_timestamp, "rb") as f:
-        hashtimestamp =binascii.b2a_base64(f.read())
-    f.close()
-    
     nom_fichier = nom_fichier
+    bloc_info+="**"
     ## completer le bloc d'info pour arriver à 64 octs
     if len(bloc_info) < 64:
         octets_to_add=64 - len(bloc_info)
@@ -79,7 +67,7 @@ def faire_stegano(nom_fichier,bloc_info,file_timestamp,hash_timestamp):
 
     bloc_info=bloc_info[:64]
     # add octet on bloc_info
-    message_a_traiter = bloc_info+str(timestamp)+"**"+str(hashtimestamp)
+    message_a_traiter = bloc_info+str(timestamp) #+str(hashtimestamp)
     mon_image = Image.open(nom_fichier)
     cacher(mon_image, message_a_traiter)
     mon_image.save("../Dossier/tmp/stegano_attestation.png")

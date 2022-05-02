@@ -8,9 +8,7 @@ from bottle import route, run, template, request, response
 def création_attestation():
     contenu_identité = request.forms.get('identite')
     contenu_intitulé_certification = request.forms.get('intitule_certif')
-    #print('nom prénom :', contenu_identité, ' intitulé de la certification :',contenu_intitulé_certification)
     tools.faire_attestation(contenu_identité+"|"+contenu_intitulé_certification)
-    #print(" Votre attestation est prête vous pouvez la récupérer ")
     response.set_header('Content-type', 'text/plain')
     return "Votre attestation est prête vous pouvez la récupérer!!!!"
 
@@ -34,6 +32,6 @@ def récupérer_fond():
     descripteur_fichier = open('../Dossier/tmp/attestation.png','rb')
     contenu_fichier = descripteur_fichier.read()
     descripteur_fichier.close()
-    return contenu_fichier 
+    return contenu_fichier
 
 run(host='0.0.0.0',port=8080,debug=True)
