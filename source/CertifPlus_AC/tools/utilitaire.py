@@ -10,7 +10,7 @@ import time
 def faire_qr_code(info,taille_timestamp):
     """
        Focntion qui permet de faire le QRcode
-       return void 
+       return void
     """
     data = str(info)+"**"+str(taille_timestamp)
     nom_fichier = "../Dossier/tmp/qrcode.png"
@@ -72,8 +72,8 @@ def faire_attestation(bloc_info_from):
     bloc_info=bloc_info_from
     add_strings_to_img(bloc_info)
     demande_timestamp()
-    taille_timestamp = stegano.faire_stegano(nom_fichier_img,bloc_info,file_timestamp) #,file_hash_time_stamp)
-    faire_qr_code(signature_info,taille_timestamp)
+    taille_stegano = stegano.faire_stegano(nom_fichier_img,bloc_info,file_timestamp) #,file_hash_time_stamp)
+    faire_qr_code(signature_info,taille_stegano)
     merge_qrcode_wit_img()
 
 def get_info_stegano():
