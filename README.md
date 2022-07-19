@@ -23,3 +23,9 @@ Private
 * sudo apt install libzbar0 libzbar-dev
 * python3 -m pip install zbarlight
 
+
+## contributors :
+
+* [Yawavi Jeona-Lucie LATEVI](https://github.com/jeo284)
+* [Claudio Antonio](https://github.com/MonaQuimbamba)
+
